@@ -12,20 +12,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// type handlers interface {
-// 	ListServices()
-// 	Service() interface{}
-// }
-
-// type handlerFn struct{}
-
-func ListServices(w http.ResponseWriter, r *http.Request )  {
+func ListServices(w http.ResponseWriter, r *http.Request)  {
 	currPageStr := r.URL.Query().Get("curr")
 	countStr := r.URL.Query().Get("count")
 	sort := r.URL.Query().Get("sortOrder")
 	searchQuery := r.URL.Query().Get("search")
 	ctx := r.Context()
-
 	currPage := 1
 	count := 5
 	totalPgCount := 0
@@ -47,9 +39,9 @@ func ListServices(w http.ResponseWriter, r *http.Request )  {
 	findOpt := options.Find() 
 	
 	if sortOrder == 1 {
-		findOpt.SetSort(bson.D{{Key: "name", Value: 0}})
+		findOpt.SetSort(bson.D{{Key: "id", Value: -1}})
 	} else {
-		findOpt.SetSort(bson.D{{Key: "name", Value: 1}})
+		findOpt.SetSort(bson.D{{Key: "id", Value: 1}})
 	}
 
 	if searchQuery == "" {
@@ -82,9 +74,7 @@ func ListServices(w http.ResponseWriter, r *http.Request )  {
 
 		for cursor.Next(ctx) {
 			var service DTOs.Service
-			if err = cursor.Decode(&service); err != nil {
-				log.Println("Cursor couldn't find document, err: ", err)
-			}
+			cursor.Decode(&service)
 			services = append(services, service)
 			totalPgCount++ 
 		}
@@ -119,6 +109,26 @@ func ListServices(w http.ResponseWriter, r *http.Request )  {
 }
 
 func ServiceDetails(w http.ResponseWriter, r *http.Request) {
-	resp := "hi" + r.PathValue("id")
-	w.Write([]byte(resp))
+	ctx := r.Context()
+	serviceId := r.PathValue("id")
+	collServ := dbclient.DB_OBJ.Collection("serviceList")
+	collVer := dbclient.DB_OBJ.Collection("versions")
+	filter := bson.M{"id": serviceId}
+	var serviceData DTOs.Service
+	err := collServ.FindOne(ctx, filter).Decode(&serviceData)
+	log.Println(err)
+	filter = bson.M{"serviceId": serviceId}
+	cursor, err := collVer.Find(ctx, filter)
+	if err != nil {
+		log.Println("Failed to fetch versions, err: ", err)
+	}
+	versions := make([]DTOs.Version, 0)
+	for cursor.Next(ctx) {
+		var version DTOs.Version
+		cursor.Decode(&version)
+		versions = append(versions, version)
+	}	
+	serviceData.Versions = versions
+	respBytes, _ := json.Marshal(serviceData)
+	w.Write(respBytes)
 }
