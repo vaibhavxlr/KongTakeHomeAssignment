@@ -26,3 +26,7 @@ type Version struct {
 	VerInfo string `json:"verInfo"`
 	Changes string `json:"changes"`
 }
+type ErrorResp struct {
+	ErrorCode string `json:"error"`
+	ErrorString string `json:"errorString"`
+}

@@ -16,7 +16,7 @@ func main() {
 	mux.HandleFunc("/konnectAPI/v1/listServices", internal.ListServices)
 	mux.HandleFunc("/konnectAPI/v1/service/{id}", internal.ServiceDetails)
 
-	log.Println("Starting Konnect http server on :8080")
+	log.Println("Konnect http server listening on :8080 ...")
 	if err := http.ListenAndServe(":8080", mux); err != nil {
 		log.Fatalln("Something went wrong while starting server, err: ", err)
 	}
