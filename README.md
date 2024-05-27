@@ -107,3 +107,5 @@ To run the Konnect API project, you can either pull the pre-built Docker image f
 5. TODO - Planned implementing user authentication using JWT.
 
 6. TODO - CRUD functionality could be added utilizing the existing DB schema and connection, by adding extra handling at the application level.
+
+7. Repository branching strategy could have been improved with a separate 'develop', feature branches and main. 
