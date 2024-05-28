@@ -96,7 +96,8 @@ To run the Konnect API project, you can either pull the pre-built Docker image f
   ```
 # Notes
 1. The DB schema
-![image](https://github.com/vaibhavxlr/KongTakeHomeAssignment/assets/36249617/dc2191d0-64d9-42b6-bca8-ad7bdbeea2ec)
+![Screenshot from 2024-05-27 12-26-27](https://github.com/vaibhavxlr/KongTakeHomeAssignment/assets/36249617/690918db-1db9-435e-a60f-82aeb51aec85)
+
 
 2. Multi stage docker build to combine application binary and DB within a same container. Check 'Dockerfile' and 'startup.sh'. Not a recommended practice, but a trade off to ship a single image with everything included, making it easily testable by evaluators.
 
